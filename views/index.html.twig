@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel='stylesheet' href='/../css/styles.css'>
+    <title>Library Catalog</title>
+  </head>
+  <body>
+
+    <div class='container-fluid'>
+
+      <!-- PAGE BANNER -->
+      <div class='page-header'>
+        <img src='/img/fakeu.png' alt='university logo'>
+        <div class='logo-words'>
+          <h1>Library Catalog</h1>
+          <h5>sweet Catalog-ing</h5>
+        </div>
+      </div>
+
+      {% if not author_added %}
+        <h2 class='error'>ERROR: Must add at least one book when adding an author
+        </h2>
+      {% endif %}
+      {% if no_author_fail %}
+        <h2 class='error'>ERROR: Must add at least one author when adding a book
+        </h2>
+      {% endif %}
+      {% if added %}
+        <h2 class='success'>added!</h2>
+      {% endif %}
+        {% if books is not empty %}
+          <!-- SEARCH FOR Books -->
+          <div class = 'row'>
+            <div class='col-md-12'>
+              <form action='/search' method='post'>
+                <div class='form-group'>
+                  <label for='title'>Title to search:</label>
+                  <input id='title' name='title' class='form-control' type='text' required>
+                </div>
+                <button type='submit' class='btn btn-success'>Search</button>
+              </form>
+              <form action='/books'>
+                <button type='submit' class='btn btn-primary'>All Books</button>
+              </form>
+            </div>
+          </div>
+
+
+          <!-- SEARCH FOR Authors -->
+          <div class = 'row'>
+            <div class='col-md-12'>
+              <form action='/search_authors' method='post'>
+                <div class='form-group'>
+                  <label for='name'>Search Author:</label>
+                  <input id='name' name='name' class='form-control' type='text' required>
+                </div>
+                <button type='submit' class='btn btn-success'>Search</button>
+              </form>
+              <form action='/authors'>
+                <button type='submit' class='btn btn-primary'>All Authors</button>
+              </form>
+            </div>
+          </div>
+        {% endif %}
+
+      <!-- COURSES AND STUDENTS ROW -->
+      <div class='row'>
+        <!-- COURSES -->
+        {% if books is empty %}
+          <div class='col-md-12'>
+        {% else %}
+          <div class='col-md-6'>
+        {% endif %}
+            <h3>Create a new Book</h3>
+
+            <form action='/books' method='post'>
+              <div class='form-group'>
+                <label for='title'>Book title:</label>
+                <input id='title' name='title' class='form-control' type='text' required>
+
+              </div>
+              <div class='form-group'>
+                <label for='name'>Author name:</label>
+                <input id='name' name='name' class='form-control' type='text'>
+              </div>
+              Select authors for book
+              <div class='form-group'>
+                {% for author in authors %}
+                  <input type="checkbox" name="author_id[]" value="{{ author.getId }}"> <a href="/authors/{{ author.getId }}"> {{ author.getName }} </a><br>
+                {% endfor %}
+              </div>
+              <button type='submit' class='btn btn-success'>Add Book</button>
+            </form>
+          </div>
+
+        <!-- STUDENTS -->
+        <div class='col-md-6'>
+          {% if books is not empty %}
+            <h3>Create a new Author</h3>
+
+            <form action='/authors' method='post'>
+              <div class='form-group'>
+                <label for='name'>Author Name:</label>
+                <input id='name' name='name' class='form-control' type='text' required>
+              </div>
+
+              Select books for Author
+              <div class='form-group'>
+                {% for book in books %}
+                  <input type="checkbox" name="book_id[]" value="{{ book.getId }}"> <a href="/books/{{ book.getId }}"> {{ book.getTitle }} </a><br>
+                {% endfor %}
+              </div>
+              <button type='submit' class='btn btn-success'>Add Author</button>
+            </form>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class='page-footer'>
+        {% if books is not empty %}
+          <div class='row'>
+            <div id='footer' class='col-md-12'>
+              <form action='/destroy' method='post'>
+                <input name='_method' type='hidden' value='delete'>
+                <button type='submit' id='destroy' class='btn btn-danger center-block'>Destroy Database</button>
+              </form>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+    </div><!-- END CONTAINER -->
+  </body>
+</html>
